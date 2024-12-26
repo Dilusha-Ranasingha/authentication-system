@@ -2,6 +2,7 @@ import { User } from '../models/user.model.js';
 import bcryptjs from 'bcryptjs';
 import { genarateVerificationToken } from '../utils/genarateVerificationToken.js'; 
 import { genarateTokenAndSetCookie } from '../utils/genarateTokenAndSetCookie.js';
+import { sendVerificationEmail } from '../mailtrap/emails.js';
 
 export const signup = async (req, res) => {
     const { email, password, name } = req.body;           //get the email, password, and name from the request body.
@@ -33,6 +34,9 @@ export const signup = async (req, res) => {
 
         //JWT
         genarateTokenAndSetCookie(res,user._id);   //Call the genarateTokenAndSetCookie() function to generate a token and set it in the cookie.
+
+        await sendVerificationEmail(user.email, verificationToken);   //Call the sendVerificationEmail() function with the user email and verification code to send the verification email.
+
 
         res.status(201).json({       //Sends a response with a message and the created user.
             success: true,            //If the user is created successfully, it sends a response with success true.
