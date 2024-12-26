@@ -3,13 +3,13 @@ import { signup, login, logout } from '../controllers/auth.controller.js';   //I
 
 const router = express.Router();
 
-router.get('/signup', signup );                          // api/auth prifixes is signup
+router.post('/signup', signup );                          // api/auth prifixes is signup
 
 
-router.get('/login', login );                           // api/auth prifixes is login
+router.post('/login', login );                           // api/auth prifixes is login
 
 
-router.get('/logout',logout );                          // api/auth prifixes is logout
+router.post('/logout',logout );                          // api/auth prifixes is logout
 
 
 export default router;
