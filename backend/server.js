@@ -9,6 +9,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5001;   //Sets the port to 5000 if the PORT environment variable is not set.
 
+app.use(express.json());    //Tells the server to accept JSON data incoming request : req.body (auth.controller.js)
 
 app.use('/api/auth' , authRoutes);     //Tells the server to use the authRoutes when the URL has /api/auth in it.
 
