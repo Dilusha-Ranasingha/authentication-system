@@ -3,6 +3,7 @@ import bcryptjs from 'bcryptjs';
 import { genarateVerificationToken } from '../utils/genarateVerificationToken.js'; 
 import { genarateTokenAndSetCookie } from '../utils/genarateTokenAndSetCookie.js';
 import { sendVerificationEmail } from '../mailtrap/emails.js';
+import { sendWelcomeEmail } from '../mailtrap/emails.js';
 
 export const signup = async (req, res) => {
     const { email, password, name } = req.body;           //get the email, password, and name from the request body.
@@ -51,6 +52,39 @@ export const signup = async (req, res) => {
         return res.status(400).json({ success: false, message: error.message });          //If there is an error, it sends a response with the error message.
     }
 };
+
+export const verifyEmail = async (req, res) => {
+    const { code } = req.body;          //Gets the user entered verification code from the request body.
+    try {   
+        const user = await User.findOne({                //Finds the user with the verification code and checks if the verification code is valid.
+            verificationToken: code,
+            verificationTokenExpiresAt: {$gt: Date.now()}          //Checks if the verification code is not expired. $gt is checking the verification code is greater than the current date.
+        })
+
+        if(!user){          //If the user is not found, it sends a response with a message.
+            return res.status(400).json({ success: false, message: 'Invalid or expired verification code' });      //If the user is not found, it sends a response with a message.
+        }
+
+        user.isVerified = true;         //If the user is found, it sets the user isVerified to true.
+        user.verificationToken = undefined;       //If the user is found, it sets the verification code to delete.
+        user.verificationTokenExpiresAt = undefined;      //If the user is found, it sets the verification code expiration time to delete.
+        await user.save();          //Saves the user in the database.
+
+        await sendWelcomeEmail(user.email, user.name);        //Call the sendWelcomeEmail() function with the user email and name to send the welcome email after the user is verified.
+
+        res.status(200).json({
+            success: true,
+            message: 'Email verified successfully',
+            user: {
+                ...user._doc,
+                password: undefined
+            },
+        });
+    } catch (error) {
+        console.log('Error in verify email', error);
+        res.status(400).json({ success: false, message: "server error" });      //If there is an error, it sends a response with the
+    }
+}
 
 export const login = async (req, res) => {
     res.send('login route');
