@@ -87,7 +87,36 @@ export const verifyEmail = async (req, res) => {
 }
 
 export const login = async (req, res) => {
-    res.send('login route');
+    const { email, password } = req.body;          //Gets the email and password from the request body what user entered.
+    try {
+        const user = await User.findOne({ email });          //Finds the user with entered email in the database.
+        if(!user){
+            return res.status(400).json({ success: false, message: 'Invalid credentials' });      //If the user is not found matched with the entered email, show invalid credentials.
+        }
+        const isPasswordValid = await bcryptjs.compare(password, user.password);          //Compares the entered password with the password in the database.
+        if(!isPasswordValid){
+            return res.status(400).json({ success: false, message: 'Invalid credentials' });      //If the password is invalid show invalid credentials.
+        }
+
+        genarateTokenAndSetCookie(res, user._id);          //If the user is found and the password is valid, it generates a token and sets it in the cookie.
+
+        user.lastLogin = Date.now();          //Sets the last login time to the current time after user login.
+        await user.save();          //Saves the user in the database.
+
+        res.status(200).json({          //Sends a response with a message and the user data.
+            success: true,          //If the user is logged in successfully, it sends a response with success true.
+            message: 'Login successfully',          //If the user is logged in successfully, it sends a response with a message.
+            user: {          //If the user is logged in successfully, it sends the user data in the response.
+                ...user._doc,          //Sends the user data in the response.
+                password: undefined          //Sends the user data in the response without the password.
+            },
+        });
+
+        
+    } catch (error) {
+        console.log('Error in login', error);
+        res.status(400).json({ success: false, message: error.message });          //If there is an error, it sends a response with the error message.
+    }
 }
 
 export const logout = async (req, res) => {
