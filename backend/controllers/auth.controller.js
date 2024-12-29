@@ -1,8 +1,9 @@
 import { User } from '../models/user.model.js';
 import bcryptjs from 'bcryptjs';
+import crypto from 'crypto';
 import { genarateVerificationToken } from '../utils/genarateVerificationToken.js'; 
 import { genarateTokenAndSetCookie } from '../utils/genarateTokenAndSetCookie.js';
-import { sendVerificationEmail } from '../mailtrap/emails.js';
+import { sendPasswordResetEmail, sendVerificationEmail } from '../mailtrap/emails.js';
 import { sendWelcomeEmail } from '../mailtrap/emails.js';
 
 export const signup = async (req, res) => {
@@ -122,4 +123,30 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
     res.clearCookie('token');
     res.status(200).json({ success: true, message: 'Logout successfully' });
+}
+
+export const forgotPassword = async (req, res) => {
+    const { email } = req.body;          //Gets the email from the request body from user entered.
+    try {
+        const user = await User.findOne({ email });          //Finds the user with the entered email in the database.
+        if(!user){
+            return res.status(400).json({ success: false, message: 'User not found' });      //If the user is not found, it sends a response with a message.
+        }
+
+        const resetToken = crypto.randomBytes(20).toString('hex');          //Generates a random reset token.
+        const restTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000;          //Sets the reset token expiration time to 1 hour.
+
+        user.resetPasswordToken = resetToken;          //Sets the reset token in the user data.
+        user.resetPasswordExpiresAt = restTokenExpiresAt;          //Sets the reset token expiration time in the user data.
+
+        await user.save();          //Saves the user in the database.
+
+        await sendPasswordResetEmail(user.email, `${process.env.CLIENT_URL}/reset-password/${resetToken}`);         //Calls the sendPasswordResetEmail() function with the user email and reset token in the link to send the password reset email.
+
+        res.status(200).json({ success: true, message: 'Password reset link sent to your email' });          //Sends a response with a message if the password reset email is sent successfully.
+
+    } catch (error) {
+        console.log('Error in forgot password', error);
+        res.status(400).json({ success: false, message: error.message });          //If there is an error, it sends a response with the error message.
+    }
 }
