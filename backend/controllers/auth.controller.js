@@ -3,7 +3,7 @@ import bcryptjs from 'bcryptjs';
 import crypto from 'crypto';
 import { genarateVerificationToken } from '../utils/genarateVerificationToken.js'; 
 import { genarateTokenAndSetCookie } from '../utils/genarateTokenAndSetCookie.js';
-import { sendPasswordResetEmail, sendVerificationEmail } from '../mailtrap/emails.js';
+import { sendPasswordResetEmail, sendResetSuccessEmail, sendVerificationEmail } from '../mailtrap/emails.js';
 import { sendWelcomeEmail } from '../mailtrap/emails.js';
 
 export const signup = async (req, res) => {
@@ -147,6 +147,38 @@ export const forgotPassword = async (req, res) => {
 
     } catch (error) {
         console.log('Error in forgot password', error);
+        res.status(400).json({ success: false, message: error.message });          //If there is an error, it sends a response with the error message.
+    }
+}
+
+export const resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params;          //Gets the reset token from the request params.
+        const { password } = req.body;          //Gets the new password from the request body.
+
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpiresAt: { $gt: Date.now() },          //Checks if the reset token is not expired.
+        });
+
+        if(!user){
+            return res.status(400).json({ success: false, message: 'Invalid or expired reset token' });          //If the user is not found, it sends a response with a message.
+        }
+
+        //update password
+        const hashedPassword = await bcryptjs.hash(password, 10);          //Hashes the new password using bcryptjs.
+
+        user.password = hashedPassword;          //Sets the new password in the user data.
+        user.resetPasswordToken = undefined;          //Sets the reset token to delete.
+        user.resetPasswordExpiresAt = undefined;          //Sets the reset token expiration time to delete.
+        await user.save();          //Saves the user in the database.
+
+        await sendResetSuccessEmail(user.email);          //Calls the sendResetSuccessEmail() function with the user email to send the password reset success email.
+
+        res.status(200).json({ success: true, message: 'Password reset successfully' });          //Sends a response with a message if the password is reset successfully.
+        
+    } catch (error) {
+        console.log('Error in reset password', error);
         res.status(400).json({ success: false, message: error.message });          //If there is an error, it sends a response with the error message.
     }
 }

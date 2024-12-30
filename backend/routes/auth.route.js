@@ -1,5 +1,5 @@
 import express from "express";
-import { signup, login, logout, verifyEmail, forgotPassword } from '../controllers/auth.controller.js';   //Imports the signup function from the auth.controller.js file.
+import { signup, login, logout, verifyEmail, forgotPassword, resetPassword } from '../controllers/auth.controller.js';   //Imports the signup function from the auth.controller.js file.
 
 const router = express.Router();
 
@@ -16,5 +16,8 @@ router.post('/verify-email',verifyEmail );                // api/auth prifixes i
 
 
 router.post('/forgot-password',forgotPassword );          // api/auth prifixes is forgot-password
+
+
+router.post('/reset-password/:token',resetPassword );          // api/auth prifixes is reset-password
 
 export default router;
