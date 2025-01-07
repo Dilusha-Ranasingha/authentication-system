@@ -77,7 +77,7 @@ const SignUpPage = () => {
               type='submit'
               disabled={isLoading}
             >
-              {isLoading ? <Loader className="animate-spinmx-auto" size={24} /> : "Sign Up"}   {/*this is a loader component that is shown in the UI when the signup button is clicked*/}
+              {isLoading ? <Loader className=' animate-spin mx-auto ' size={24} /> : "Sign Up"}   {/*this is a loader component that is shown in the UI when the signup button is clicked*/}
             </motion.button>
           </form>
         </div>
