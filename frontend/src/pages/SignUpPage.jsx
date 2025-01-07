@@ -1,18 +1,28 @@
 import {motion} from "framer-motion";
 import Input from "../components/Input";
-import { Mail, User } from "lucide-react";
+import { Loader, Mail, User } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
+import { useAuthStore } from "../store/authStore";
 
 const SignUpPage = () => {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const { signup,error,isLoading } = useAuthStore();
 
-  const handleSignUp = (e) => {
-    e.preventDefault();
+  const handleSignUp = async(e) => {
+    e.preventDefault();           //this line is use to prevent the default behaviour of the form
+
+    try {
+      await signup(email, password, name);          //this line is use to call the signup function from the authStore.js file
+      navigate("/verifyemail")                      //this line is use to navigate to the verifyemail page after the signup is successfull
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 
@@ -56,6 +66,8 @@ const SignUpPage = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
 
+            {error && <p className='text-red-500 text-semibold mt-2'>{error}</p>}   {/*this is a error message that is shown in the UI if any error occurs*/}
+
             <PasswordStrengthMeter password={password} />                 {/*this is a password strength meter component*/}
             
             <motion.button
@@ -63,8 +75,9 @@ const SignUpPage = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.95 }}
               type='submit'
+              disabled={isLoading}
             >
-              Sign Up
+              {isLoading ? <Loader className="animate-spinmx-auto" size={24} /> : "Sign Up"}   {/*this is a loader component that is shown in the UI when the signup button is clicked*/}
             </motion.button>
           </form>
         </div>
