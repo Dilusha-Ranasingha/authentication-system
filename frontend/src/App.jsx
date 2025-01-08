@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import FlotingShape from "./components/flotingShape";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from "./store/authStore";
@@ -49,7 +50,7 @@ function App() {
 
 
       <Routes>
-        <Route path='/' element={"Home"} />
+        <Route path='/' element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path='/signup' element={<RedirectAuthenticatedUser><SignUpPage /></RedirectAuthenticatedUser>} />
         <Route path='/login' element={<RedirectAuthenticatedUser><LoginPage /></RedirectAuthenticatedUser>} />
         <Route path='/verifyemail' element={<VerifyEmailPage />} />
