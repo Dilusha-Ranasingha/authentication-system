@@ -48,5 +48,17 @@ export const useAuthStore = create((set) => ({
     },
 
 
+    login: async (email, password) => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await axios.post(`${API_URL}/login`, {email,password});
+            set({ user: response.data.user, isAuthenticated: true, error: null, isLoading: false });            //if the request is successfull then update the all states(user,isAuthenticated,isLoading). user data from backedn using "esponse.data.user" that is returned from backend user data
+        } catch (error) {
+            set({ error: error.response.data.message || "Invalid creentials", isLoading: false });
+            throw error;
+        }
+    }
+
+
 
 }));
