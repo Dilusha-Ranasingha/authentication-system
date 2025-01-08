@@ -22,6 +22,6 @@ router.post('/forgot-password',forgotPassword );          // api/auth prifixes i
 router.post('/reset-password/:token',resetPassword );          // api/auth prifixes is reset-password
 
 
-router.get("/check-auth", verifyToken, checkAuth);        // api/auth prifixes is check-auth
+router.get("/checkauth", verifyToken, checkAuth);        // api/auth prifixes is check-auth
 
 export default router;
