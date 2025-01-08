@@ -4,6 +4,7 @@ import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { Toaster } from 'react-hot-toast';
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
 
@@ -20,6 +21,7 @@ function App() {
         <Route path='/signup' element={<SignUpPage />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/verifyemail' element={<VerifyEmailPage />} />
+        <Route path='/profile' element={<ProfilePage />} />
       </Routes>
       <Toaster/>
 

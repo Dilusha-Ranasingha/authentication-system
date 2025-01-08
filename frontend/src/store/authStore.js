@@ -34,7 +34,18 @@ export const useAuthStore = create((set) => ({
             set({ error: error.response.data.message || "Invalid verification code", isLoading: false });
             throw error;
         }
-    }
+    },
+
+
+    checkAuth: async () => {                    //this is the checkAuth function that is used to make the http request to the backend to check if the user is authenticated or not
+        set({ isCheckingAuth: true, error: null });
+        try {
+            const response = await axios.get(`${API_URL}/checkauth`);
+            set({ user: response.data.user, isAuthenticated: true, isCheckingAuth: false });
+        } catch (error) {
+            set({ error: null, isCheckingAuth: false, isAuthenticated: false });
+        }
+    },
 
 
 
