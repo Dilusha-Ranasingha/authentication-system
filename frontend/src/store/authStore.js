@@ -57,8 +57,19 @@ export const useAuthStore = create((set) => ({
             set({ error: error.response.data.message || "Invalid creentials", isLoading: false });
             throw error;
         }
-    }
+    },
 
+
+    logout: async() => {                    //this is the logout function that is used to make the http request to the backend to logout the user
+        set({ isLoading: true, error: null });
+        try {
+            await axios.post(`${API_URL}/logout`);
+            set({ user: null, isAuthenticated: false, error: null, isLoading: false });
+        } catch (error) {
+            set({ error: "Error loging out", isLoading: false });
+            throw error;
+        }
+    }
 
 
 }));
