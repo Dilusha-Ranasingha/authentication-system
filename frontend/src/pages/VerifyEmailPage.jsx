@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useAuthStore } from "../store/authStore";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const VerifyEmailPage = () => {
 	const [code, setCode] = useState(["", "", "", "", "", ""]);            //this line shows the code input fields
 	const inputRefs = useRef([]);                  //this line shows the input fields     
-    const isLoading = false;
+	const navigate = useNavigate();                 //this line shows the navigate function from the react-router-dom
+
+	const {error,isLoading,verifyEmail} = useAuthStore();               //this line shows the error,isLoading and verifyEmail function from the useAuthStore
 
 
 	const handleChange = (index, value) => {
@@ -40,7 +45,13 @@ const VerifyEmailPage = () => {
 	const handleSubmit = async (e) => {                  //this function shows the verification code submitted
 		e.preventDefault();
 		const verificationCode = code.join("");
-        console.log(`Verification code submitted: ${verificationCode}`);
+        try {
+			await verifyEmail(verificationCode);              //this line shows call to the verifyEmail function from the using importted by useAuthStore.
+			navigate("/");
+			toast.success("Email verified successfully");      //the here toast is used to show the success message after the email is verified
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	useEffect(() => {                               //this useeffect shows auto submit the code when all the input fields are filled
@@ -78,6 +89,8 @@ const VerifyEmailPage = () => {
                             ))}
 					</div>
                     
+					{error && <p className='text-red-500 font-semibold mt-2'>{error}</p>}          {/*this line shows the error message if any error occurs*/}
+
                     <motion.button
 						whileHover={{ scale: 1.05 }}
 						whileTap={{ scale: 0.95 }}

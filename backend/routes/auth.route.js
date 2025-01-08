@@ -13,7 +13,7 @@ router.post('/login', login );                           // api/auth prifixes is
 router.post('/logout',logout );                          // api/auth prifixes is logout
 
 
-router.post('/verify-email',verifyEmail );                // api/auth prifixes is verify-email
+router.post('/verifyemail',verifyEmail );                // api/auth prifixes is verify-email
 
 
 router.post('/forgot-password',forgotPassword );          // api/auth prifixes is forgot-password

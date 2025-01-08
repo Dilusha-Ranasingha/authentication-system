@@ -13,7 +13,7 @@ export const useAuthStore = create((set) => ({
     isLoading: false,
     isCheckingAuth: true,
 
-    signup: async (email, password, name) => {
+    signup: async (email, password, name) => {             //this is the signup function that is used to make the http request to the backend to signup the user
         set({ isLoading: true, error: null });
         try {
             const response = await axios.post(`${API_URL}/signup`, {email,password,name});
@@ -22,5 +22,20 @@ export const useAuthStore = create((set) => ({
             set({ error: error.response.data.message || "User already exist", isLoading: false });
             throw error;
         }
+    },
+
+
+    verifyEmail: async (code) => {                       //this is the verifyEmail function that is used to make the http request to the backend to verify the email of the user
+        set({ isLoading: true, error: null });
+        try {
+            const response = await axios.post(`${API_URL}/verifyemail`, { code });               //this line shows calling the verifyemail API of the backend and passing the code as the parameter(code).
+            set({ user: response.data.user, isAuthenticated: true, isLoading: false });
+        } catch (error) {
+            set({ error: error.response.data.message || "Invalid verification code", isLoading: false });
+            throw error;
+        }
     }
+
+
+
 }));
