@@ -7,6 +7,7 @@ import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 //protect route that requires user to be authenticated
 const ProtectedRoute = ({children}) => {
@@ -38,8 +39,9 @@ function App() {
     checkAuth()
   }, [checkAuth])
 
-  console.log("isAuthenticated", isAuthenticated);
-  console.log("user", user);
+  if(isCheckingAuth){
+    return <LoadingSpinner />;             //this line shows the loading spinner when connection was slow
+  }
 
   return (
     <div 
