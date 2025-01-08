@@ -4,8 +4,20 @@ import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { Toaster } from 'react-hot-toast';
+import { useAuthStore } from "./store/authStore";
+import { useEffect } from "react";
 
 function App() {
+
+
+  const {isCheckingAuth, checkAuth, isAuthenticated, user} = useAuthStore();
+
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
+
+  console.log("isAuthenticated", isAuthenticated);
+  console.log("user", user);
 
   return (
     <div 

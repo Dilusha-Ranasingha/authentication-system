@@ -47,7 +47,7 @@ const VerifyEmailPage = () => {
 		const verificationCode = code.join("");
         try {
 			await verifyEmail(verificationCode);              //this line shows call to the verifyEmail function from the using importted by useAuthStore.
-			navigate("/profile");
+			navigate("/");
 			toast.success("Email verified successfully");      //the here toast is used to show the success message after the email is verified
 		} catch (error) {
 			console.log(error);
