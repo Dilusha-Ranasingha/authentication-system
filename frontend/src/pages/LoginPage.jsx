@@ -47,7 +47,7 @@ const LoginPage = () => {
               />
 
               <div className='flex items-center mb-6'>
-                <Link to='/fogot-password' className='text-sm text-blue-400 hover:underline'>
+                <Link to='/forgotpassword' className='text-sm text-blue-400 hover:underline'>
                   Forgot password? 
                 </Link>
               </div>

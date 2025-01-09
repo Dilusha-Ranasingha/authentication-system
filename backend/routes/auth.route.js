@@ -16,7 +16,7 @@ router.post('/logout',logout );                          // api/auth prifixes is
 router.post('/verifyemail',verifyEmail );                // api/auth prifixes is verify-email
 
 
-router.post('/forgot-password',forgotPassword );          // api/auth prifixes is forgot-password
+router.post('/forgotpassword',forgotPassword );          // api/auth prifixes is forgot-password
 
 
 router.post('/reset-password/:token',resetPassword );          // api/auth prifixes is reset-password
