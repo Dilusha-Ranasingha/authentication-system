@@ -75,7 +75,7 @@ export const useAuthStore = create((set) => ({
     ForgotPassword: async (email) => {                       //this is the ForgotPassword function that is used to make the http request to the backend to send the email to the user to reset the password
         set({ isLoading: true, error: null, message: null });
         try {
-            const response = await axios.post(`${API_URL}/forgotpassword`, { email });
+            const response = await axios.post(`${API_URL}/forgotpassword`, { email });            //this line shows calling the forgotpassword API of the backend and passing the email as the parameter(email) and send the reset password email to the entered email.
             set({ message: response.data.message , isLoading: false });
         } catch (error) {
             set({
