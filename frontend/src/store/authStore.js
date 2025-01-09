@@ -12,6 +12,7 @@ export const useAuthStore = create((set) => ({
     error:null,                                 //this is the state that is used to store the error message if any error occurs
     isLoading: false,
     isCheckingAuth: true,
+    message: null,
 
     signup: async (email, password, name) => {             //this is the signup function that is used to make the http request to the backend to signup the user
         set({ isLoading: true, error: null });
@@ -73,7 +74,7 @@ export const useAuthStore = create((set) => ({
 
 
     ForgotPassword: async (email) => {                       //this is the ForgotPassword function that is used to make the http request to the backend to send the email to the user to reset the password
-        set({ isLoading: true, error: null, message: null });
+        set({ isLoading: true, error: null });
         try {
             const response = await axios.post(`${API_URL}/forgotpassword`, { email });            //this line shows calling the forgotpassword API of the backend and passing the email as the parameter(email) and send the reset password email to the entered email.
             set({ message: response.data.message , isLoading: false });
@@ -81,6 +82,21 @@ export const useAuthStore = create((set) => ({
             set({
                 isLoading: false,
                 error: error.response.data.message || "Error sending reset password email",
+            });
+            throw error;
+        }
+    },
+
+
+    resetPassword: async (token, password) => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await axios.post(`${API_URL}/reset-password/${token}`, { password });
+            set({ message: response.data.message, isLoading: false });
+        } catch (error) {
+            set({
+                isLoading: false,
+                error: error.response.data.message || "Error reseting password",
             });
             throw error;
         }
